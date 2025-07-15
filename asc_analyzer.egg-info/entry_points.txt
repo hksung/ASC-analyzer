@@ -1,0 +1,2 @@
+[console_scripts]
+asc-analyzer = asc_analyzer.cli:main

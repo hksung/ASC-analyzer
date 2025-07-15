@@ -1,32 +1,32 @@
-# ASC Analyzer
-import spacy
+#ASC Analyzer
+import spacy 
 from spacy.tokens import Doc
 from spacy.language import Language
+from huggingface_hub import snapshot_download
 import json
 import glob
 import statistics as stat
 import math
 import os
+
 import warnings
-from collections import defaultdict
-import pprint
 
-# Suppress warnings
-warnings.filterwarnings(
-    "ignore",
-    message="You are using `torch.load` with `weights_only=False`",
-    category=FutureWarning
-)
-warnings.filterwarnings(
-    "ignore",
-    message="Model '.*' was trained with spaCy v3.7.4 and may not be 100% compatible",
-    category=UserWarning
-)
+PACKAGE_DIR    = os.path.dirname(__file__)
+TRF_MODEL_PATH = os.path.join(PACKAGE_DIR, "models", "en_core_web_trf")
 
-# Load pipelines
+# Load base NLP pipeline without NER
 nlp = spacy.load("en_core_web_trf", exclude=["ner"])
-model_dir = "/Users/hakyungsung/Documents/GitHub-tch/ASC-analyzer/asc_analyzer/models/asc_model"
-ascNLP = spacy.load(model_dir)
+
+#DEFAULT_MODEL_DIR = os.path.join(PACKAGE_DIR, "models", "asc_model")
+model_path = snapshot_download(
+    repo_id="hksung/ASC_tagger_v2",
+    repo_type="model",  # optional, defaults to 'model'
+    local_dir="~/.asc_analyzer_cache"
+)
+
+# Load the spaCy model from the subfolder
+ascNLP = spacy.load(f"{model_path}/model-best")
+
 
 def fullExtractSent(sent,verbose = False):
 	doc = nlp(sent)
@@ -78,58 +78,65 @@ def fullExtractDoc(text,verbose = False):
 		docList.append(sentList)
 	return(docList)
 
+def ascExtractDoc(text,ascFreqDict,ascSoaDict,verbose = False):
+	doc = nlp(text)
+	docEnts = ascNLP(text)
+	docList = []
+	entD = {}
+	for ent in docEnts.ents:
+		entD[str(ent.start_char)] = ent.label_
+		#print((str(ent.start_char), ent.text, ent.lemma_, ent.label_))
+	#print(entD)
+	for sent in doc.sents:
+		sentList = []
+		sentidx = 0
+		w1idx = 0
+		for token in sent:
+			if sentidx == 0:
+				w1idx = token.i
+			sentidx += 1
+			tokL = [str(sentidx),token.text,token.lemma_] #just get idx, token, and lemma
+			if str(token.idx) not in entD or token.lemma_ in ["."]:
+				tokL.append("\t".join(["_","_","_","_","_","_","_","_"]))
+			else:
+				ascString = entD[str(token.idx)].replace("_","-")
+				tokL.append(ascString)
+				ascLemmaString = "_".join([token.lemma_,ascString])
+				#add lemma freq
+				if token.lemma_ in ascFreqDict["lemmaFreq"]:
+					tokL.append(round(math.log(ascFreqDict["lemmaFreq"][token.lemma_]),3))
+				else:
+					tokL.append("_")
+				#add ASC freq
+				if ascString in ascFreqDict["ascFreqD"]:
+					tokL.append(round(math.log(ascFreqDict["ascFreqD"][ascString]),3))
+				else:
+					tokL.append("_")
+				#add lemma-ASC freq
+				if ascLemmaString in ascFreqDict["ascLemmaFreqD"]:
+					tokL.append(round(math.log(ascFreqDict["ascLemmaFreqD"][ascLemmaString]),3))
+				else:
+					tokL.append("_")
+				for ascSoa in ["mi","tscore","deltap_lemma_cue","deltap_structure_cue"]:
+					if ascLemmaString in ascSoaDict[ascSoa]:
+						tokL.append(round(ascSoaDict[ascSoa][ascLemmaString],3))
+					else:
+						tokL.append("_")
 
-def ascExtractDoc(text, ascFreqDict, ascSoaDict, verbose=False):
-    doc = nlp(text)
-    ents = {str(ent.start_char): ent.label_.replace("_", "-") for ent in ascNLP(text).ents}
-    docs = []
-    for sent in doc.sents:
-        rows = []
-        start = sent[0].i
-        for idx, token in enumerate(sent, start=1):
-            row = [str(idx), token.text, token.lemma_]
-            label = ents.get(str(token.idx))
-            print(label)
-            if not label or token.lemma_ == '.':
-                row.append("\t".join(["_"]*8))
-            else:
-                row.append(label)
-                lemma_label = f"{token.lemma_}_{label}"
-                # lemma freq
-                row.append(
-                    round(math.log(ascFreqDict['lemmaFreq'].get(token.lemma_,0)),3)
-                    if token.lemma_ in ascFreqDict['lemmaFreq'] else "_"
-                )
-                # asc freq
-                row.append(
-                    round(math.log(ascFreqDict['ascFreqD'].get(label,0)),3)
-                    if label in ascFreqDict['ascFreqD'] else "_"
-                )
-                # lemma-asc freq
-                row.append(
-                    round(math.log(ascFreqDict['ascLemmaFreqD'].get(lemma_label,0)),3)
-                    if lemma_label in ascFreqDict['ascLemmaFreqD'] else "_"
-                )
-                # SOA metrics
-                for m in ['mi','tscore','deltap_lemma_cue','deltap_structure_cue']:
-                    row.append(
-                        round(ascSoaDict[m].get(lemma_label,0),3)
-                        if lemma_label in ascSoaDict[m] else "_"
-                    )
-            rows.append(row)
-            if verbose:
-                print(row)
-        docs.append(rows)
-    return docs
+			sentList.append(tokL)
+			if verbose == True:
+				pass
+				#print(tokL)
+			#print(token.i, token.idx,token.text,token.lemma_,token.pos_, token.dep_) #token.idx is start character
+		docList.append(sentList)
+	return(docList)
 
-
-def conlluString(meta, conlluList):
-    body = "\n".join(["\t".join(r) for r in conlluList])
-    return f"{meta}\n{body}"
-
+def conlluString(metaString, conlluList):
+	conllustr = "\n".join(["\t".join(x) for x in conlluList])
+	return("\n".join([metaString,conllustr]))
 
 def processText(text):
-	ascDict = {"lemmas" : [], "ascs" : [], "asc+lemmas" : []}
+	ascDict = {"lemmas" : [], "ascs" : [], "vacs" : [], "asc+lemmas" : [], "vac+lemmas" : []}
 	processed = fullExtractDoc(text)
 	for sent in processed:
 		vacIdxList = []
@@ -139,8 +146,19 @@ def processText(text):
 				ascDict["ascs"].append("-".join(token[9].split("_")))
 				ascDict["asc+lemmas"].append("_".join([token[2],"-".join(token[9].split("_"))]))
 				vacIdxList.append(token[0]) #get list of idxs to process next
+		for mvIdx in vacIdxList:
+			vacDeps = []
+			for token in sent:
+				depHead = token[6]
+				if token[0] == mvIdx:
+					vacDeps.append("MainVerb")
+					lemma = token[2] #grabbing this again for easy integration
+				elif depHead == mvIdx:
+					vacDeps.append(token[7]) #can refine this later as needed
+			refinedVac = "-".join([x for x in vacDeps if x not in ["aux","auxpass","punct","neg"]]) #don't include these in vacs
+			ascDict["vacs"].append(refinedVac)
+			ascDict["vac+lemmas"].append("_".join([lemma,refinedVac]))
 	return(ascDict)
-
 
 def ttr(strList):
 	if len(strList) == 0:
@@ -243,6 +261,7 @@ def soaLookup(fDict,itemList,returnList = False):
 	else:
 		return(outAv)
 
+
 def indexCalc(ascDict,freqD,ascD):
 	indexDict = {} #finish this
 	for x in ascDict: #add ascDict items to outputDict
@@ -252,6 +271,7 @@ def indexCalc(ascDict,freqD,ascD):
 	indexDict["lemmasNoBe"] = mvRefiner(indexDict["lemmas"],["be"])
 	#print(indexDict["lemmasNoBe"])
 	indexDict["asc+lemmasNoBe"] = ascRefiner(indexDict["asc+lemmas"],None,lemmaIgnore = ["be"])
+	indexDict["vac+lemmasNoBe"] = ascRefiner(indexDict["vac+lemmas"],None,lemmaIgnore = ["be"])
 
 	#create specific ASC lists
 	indexDict["asc+lemmas_TRAN-S"] = ascRefiner(indexDict["asc+lemmas"],targetASC = ["TRAN-S"])
@@ -268,16 +288,29 @@ def indexCalc(ascDict,freqD,ascD):
 	indexDict["clauseCount"] = len(indexDict["lemmas"])
 	indexDict["clauseCountNoBe"] = len(indexDict["lemmasNoBe"])
 
+	indexDict["mvTTR"] = ttr(indexDict["lemmas"])
+	indexDict["mvTTRNoBe"] = ttr(indexDict["lemmasNoBe"])
+
 	indexDict["ascTTR"] = ttr(indexDict["ascs"])
+	indexDict["vacTTR"] = ttr(indexDict["vacs"])
 
 	indexDict["ascLemmaTTR"] = ttr(indexDict["asc+lemmas"])
 	indexDict["ascLemmaTTRNoBe"] = ttr(indexDict["asc+lemmasNoBe"])
 
+	indexDict["vacLemmaTTR"] = ttr(indexDict["vac+lemmas"])
+	indexDict["vacLemmaTTRNoBe"] = ttr(indexDict["vac+lemmasNoBe"])
+
+	indexDict["mvMATTR11"] = MATTR(indexDict["lemmas"])
+	indexDict["mvMATTR11NoBe"] = MATTR(indexDict["lemmasNoBe"])
+
 	indexDict["ascMATTR11"] = MATTR(indexDict["ascs"])
+	indexDict["vacMATTR11"] = MATTR(indexDict["vacs"])
 
 	indexDict["ascLemmaMATTR11"] = MATTR(indexDict["asc+lemmas"])
+	indexDict["vacLemmaMATTR11"] = MATTR(indexDict["vac+lemmas"])
 
 	indexDict["ascLemmaMATTR11NoBe"] = MATTR(indexDict["asc+lemmasNoBe"])
+	indexDict["vacLemmaMATTR11NoBe"] = MATTR(indexDict["vac+lemmasNoBe"])
 
 	#asc proportion indices
 	indexDict["TRAN-S_Prop"]  = proportion(indexDict["ascs"], "TRAN-S")
@@ -293,12 +326,21 @@ def indexCalc(ascDict,freqD,ascD):
 	#insert code for calculating frequency indices here.
 	#freqlookup(fDict,itemList,returnList = False, logged = True, cutoff = 5)
 	#freqlookup(fDict,itemList,returnList = False, logged = True, cutoff = 5)
+	indexDict["mvAvFreq"] = freqLookup(freqD["lemmaFreq"],indexDict["lemmas"])
+	indexDict["mvFreq"] = freqLookup(freqD["lemmaFreq"],indexDict["lemmas"],returnList = True)
 
 	indexDict["ascAvFreq"] = freqLookup(freqD["ascFreqD"],indexDict["ascs"])
 	indexDict["ascFreq"] = freqLookup(freqD["ascFreqD"],indexDict["ascs"],returnList = True)
 
+	indexDict["vacAvFreq"] = freqLookup(freqD["vacFreqD"],indexDict["vacs"])
+	indexDict["vacFreq"] = freqLookup(freqD["vacFreqD"],indexDict["vacs"],returnList = True)
+
 	indexDict["ascLemmaAvFreq"] = freqLookup(freqD["ascLemmaFreqD"],indexDict["asc+lemmas"])
 	indexDict["ascLemmaFreq"] = freqLookup(freqD["ascLemmaFreqD"],indexDict["asc+lemmas"],returnList = True)
+
+	indexDict["vacLemmaAvFreq"] = freqLookup(freqD["vacLemmaFreqD"],indexDict["vac+lemmas"])
+	indexDict["vacLemmaFreq"] = freqLookup(freqD["vacLemmaFreqD"],indexDict["vac+lemmas"],returnList = True)
+
 	# asc soa here
 	indexDict["ascAvMI"] = soaLookup(ascD["mi"],indexDict["asc+lemmas"])
 	indexDict["ascAvTscore"] = soaLookup(ascD["tscore"],indexDict["asc+lemmas"])
@@ -366,33 +408,49 @@ def indexCalcFull(loFiles,freqD,ascD):
 		outDict[simplefname] = indexCalc(processText(text),freqD,ascD)
 	return(outDict)
 
-def writeCsv(fullDict, indexNames, outName):
-    import csv
 
-    with open(outName, "w", newline="") as outf:
-        writer = csv.writer(outf)
-        # header
-        writer.writerow(["filename"] + indexNames)
-        # rows
-        for fname, metrics in fullDict.items():
-            row = [fname] + [str(metrics[idx]) for idx in indexNames]
-            writer.writerow(row)
-    outf.close()
-# Optional: retain ASC output functions
+def writeCsv(fullDict,indexNames,outName):
+	outf = open(outName,"w")
+	outL = []
+	header = ["filename"] + indexNames
+	outL.append(header)
+	for fname in fullDict:
+		#print(fname)
+		indexL = []
+		for index in indexNames:
+			#print(index)
+			val = fullDict[fname][index]
+			#print(val)
+			indexL.append(str(val))
+		indexL = [fname] + indexL
+		outL.append(indexL)
+	outString = "\n".join([",".join(x) for x in outL])
+	#print(outString)
+	outf.write(outString)
+	outf.flush()
+	outf.close()
 
-def writeASCoutput(newFname,docAscList,header=["idx","token","lemma","asc","lemmaFreq","ascFreq","ascLemmaFreq","mi","tscore","deltap_lemma_cue","deltap_structure_cue"]):
-    with open(newFname,'w') as outf:
-        outf.write('\t'.join(header)+'\n')
-        for sent in docAscList:
-            outf.write('\n'.join(['\t'.join(x) for x in sent])+'\n\n')
-
+def writeASCoutput(newFname,docAscList,header = ["idx","token","lemma","asc","lemmaFreq","ascFreq","ascLemmaFreq","mi","tscore","deltap_lemma_cue","deltap_structure_cue"]):
+	outf = open(newFname,"w")
+	outl = []
+	for sent in docAscList:
+		sentList = []
+		for token in sent:
+			sentList.append("\t".join([str(x) for x in token]))
+		outl.append("\n".join(sentList))
+	outf.write("\t".join(header) + "\n" + "\n\n".join(outl))
+	outf.flush()
+	outf.close()
 
 def processCorpusASC(indir,outdir,suffix,freqD,soaD):
-    files=glob.glob(indir+'*'+suffix)
-    for i,fn in enumerate(files,1):
-        name=os.path.basename(fn)
-        print(f"Processing: {name} ({i}/{len(files)})")
-        txt=open(fn,errors='ignore').read()
-        ascList=ascExtractDoc(txt,freqD,soaD)
-        writeASCoutput(os.path.join(outdir,name.replace(suffix,'_ASCinfo'+suffix)),ascList)
-    print(f"Processed {len(files)} files")
+	targetFileList = glob.glob(indir + "*" + suffix)
+	totalCount = len(targetFileList)
+	startCount = 0
+	for filename in targetFileList:
+		startCount += 1
+		simpleFilename = filename.split("/")[-1]
+		print("Processing:",simpleFilename,startCount,"of",totalCount)
+		targetText = open(filename,errors = "ignore").read()
+		writeASCoutput(outdir + simpleFilename.replace(suffix,"_ASCinfo" + suffix),ascExtractDoc(targetText,freqD,soaD))
+	print("Processed",totalCount,"files")
+

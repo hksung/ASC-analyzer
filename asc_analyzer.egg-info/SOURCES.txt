@@ -1,0 +1,17 @@
+MANIFEST.in
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+asc_analyzer/__init__.py
+asc_analyzer/cli.py
+asc_analyzer/core.py
+asc_analyzer.egg-info/PKG-INFO
+asc_analyzer.egg-info/SOURCES.txt
+asc_analyzer.egg-info/dependency_links.txt
+asc_analyzer.egg-info/entry_points.txt
+asc_analyzer.egg-info/top_level.txt
+asc_analyzer/data/allFreqsCOW_Refined_20240315.json
+asc_analyzer/data/allFreqsSubT_20240305.json
+asc_analyzer/data/ascSoaCOW_20240305.json
+asc_analyzer/data/ascSoaSubT_20240305.json
