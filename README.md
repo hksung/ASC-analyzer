@@ -1,10 +1,10 @@
 # ASC-analyzer
 
-The ASC Analyzer extracts Argument Structure Constructions (ASCs) from raw English texts and computes indices related to ASC usage.
+The ASC analyzer extracts Argument Structure Constructions (ASCs) from raw English texts and computes indices related to ASC usage.
 
 
 ## Installation
-To ensure stability and compatibility, we recommend installing dependencies in the following order:
+To ensure stability, I recommend installing dependencies in the following order:
 
 1. Install `spaCy`:
    ```bash
@@ -80,10 +80,10 @@ You can save this output to txt files by including `--save-asc-output`.
 
 ## Citation
 
-- If you use the ASC tagger (`--print-asc`, `--save-asc-output`) in your research, please cite:
+- If you use the ASC tagger (i.e., `--print-asc`, `--save-asc-output`), please cite:
     - Sung, H., & Kyle, K. (2024). [Leveraging Pre-trained Language Models for Linguistic Analysis: A Case of Argument Structure Constructions](https://aclanthology.org/2024.emnlp-main.415/). *Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP)*.
 
-- The ASC Analyzer is currently in beta testing and will be updated.
+- The ASC analyzer is currently in beta testing and will be updated soon.
 
 # License
 
