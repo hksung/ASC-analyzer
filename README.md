@@ -87,6 +87,4 @@ You can save this output to txt files by including `--save-asc-output`.
 
 # License
 
-This project is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
-
-See the full license [here](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).
