@@ -48,9 +48,9 @@ python3 -m asc_analyzer.cli \
 
 ```bash
 python3 -m asc_analyzer.cli \
-  --input-dir data/text \
-  --source cow \
-  --save-asc-output
+  --input-dir "/path/to/texts" \
+  --save-asc-output \  # Saves ASC-tagged files in the same directory as the input
+  --source cow
 ```
 
 * Assign ASC tags to each sentence
@@ -82,16 +82,24 @@ python3 -m asc_analyzer.cli --help
 
 ## Output for `--print-asc`
 
-When using the `--print-asc` option, the output for each sentence shows aligned token information and its ASC label (`None` if no ASC applies):
+When using the `--print-asc` option, the ASC Analyzer prints token-level tagging results directly to the terminal in a tabular format. 
 
+```bash
+python3 -m asc_analyzer.cli \
+  --input-dir "/path/to/texts" \
+  --print-asc
 ```
+
+Example output:
+```python
 # sent_id = 1
 1	The	the	
 2	idea	idea	
 3	is	be	ATTR
 4	trust	trust	
 ```
-You can save this output to txt files by including `--save-asc-output`.
+
+You can save this output to txt files by including `--save-asc-output` (as shown in Option 2 of the Quickstart section).
 
 ## Citation
 
