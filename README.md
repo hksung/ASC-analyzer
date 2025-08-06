@@ -35,15 +35,23 @@ To ensure stability, I recommend installing dependencies in the following order:
 
 Then run the analyzer using:
 
+- Option 1. Save summary statistics as a csv
+
+```bash
+python3 -m asc_analyzer.cli \
+  --input-dir "/path/to/texts" \
+  --output-csv "/path/to/output.csv" \
+  --source "cow"    # or "subt"
+```
+
+- Option 2. Save ASC-tagged text files
+
 ```bash
 python3 -m asc_analyzer.cli \
   --input-dir data/text \
   --source cow \
-  --print-asc \
   --save-asc-output
-````
-
-This command will:
+```
 
 * Assign ASC tags to each sentence
 * Print the ASC-tagged results directly to the terminal (`--print-asc`)
