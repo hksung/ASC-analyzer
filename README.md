@@ -26,16 +26,17 @@ To ensure stability, I recommend installing dependencies in the following order:
 4. Install the ASC analyzer package:
 
    ```bash
-   pip install asc-analyzer
+   pip install asc-analyzer 
    ```
 
 ## Quickstart
-Prepare a directory with `.txt` files (e.g., `data/text/`). Each file should contain plain English text.
+- Note: The package name on PyPI is asc-analyzer, but the internal Python module is asc_analyzer.
+- Prepare a directory with `.txt` files. Each file should contain plain English text.
 
-Then run:
+Then run the analyzer using:
 
 ```bash
-asc-analyzer \
+python3 -m asc_analyzer.cli \
   --input-dir data/text \
   --source cow \
   --print-asc \
@@ -54,6 +55,12 @@ This command will:
     * Choose the source based on the register that best matches your input data.
 
 ## Options
+
+To view all available options and flags, run:
+
+```bash
+python3 -m asc_analyzer.cli --help
+```
 
 | Option                        | Description                                                                 |
 |------------------------------|-----------------------------------------------------------------------------|
