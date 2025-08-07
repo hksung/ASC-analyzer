@@ -26,23 +26,32 @@ To ensure stability, I recommend installing dependencies in the following order:
 4. Install the ASC analyzer package:
 
    ```bash
-   pip install asc-analyzer
+   pip install asc-analyzer 
    ```
 
 ## Quickstart
-Prepare a directory with `.txt` files (e.g., `data/text/`). Each file should contain plain English text.
+- Note: The package name on PyPI is asc-analyzer, but the internal Python module is asc_analyzer.
+- Prepare a directory with `.txt` files. Each file should contain plain English text.
 
-Then run:
+Then run the analyzer using:
+
+- Option 1. Save summary statistics as a csv
 
 ```bash
-asc_analyzer \
-  --input-dir data/text \
-  --source cow \
-  --print-asc \
-  --save-asc-output
-````
+python3 -m asc_analyzer.cli \
+  --input-dir "/path/to/texts" \
+  --output-csv "/path/to/output.csv" \
+  --source "cow"    # or "subt"
+```
 
-This command will:
+- Option 2. Save ASC-tagged text files
+
+```bash
+python3 -m asc_analyzer.cli \
+  --input-dir "/path/to/texts" \
+  --save-asc-output \  # Saves ASC-tagged files in the same directory as the input
+  --source cow
+```
 
 * Assign ASC tags to each sentence
 * Print the ASC-tagged results directly to the terminal (`--print-asc`)
@@ -54,6 +63,12 @@ This command will:
     * Choose the source based on the register that best matches your input data.
 
 ## Options
+
+To view all available options and flags, run:
+
+```bash
+python3 -m asc_analyzer.cli --help
+```
 
 | Option                        | Description                                                                 |
 |------------------------------|-----------------------------------------------------------------------------|
@@ -67,16 +82,24 @@ This command will:
 
 ## Output for `--print-asc`
 
-When using the `--print-asc` option, the output for each sentence shows aligned token information and its ASC label (`None` if no ASC applies):
+When using the `--print-asc` option, the ASC Analyzer prints token-level tagging results directly to the terminal in a tabular format. 
 
+```bash
+python3 -m asc_analyzer.cli \
+  --input-dir "/path/to/texts" \
+  --print-asc
 ```
+
+Example output:
+```python
 # sent_id = 1
 1	The	the	
 2	idea	idea	
 3	is	be	ATTR
 4	trust	trust	
 ```
-You can save this output to txt files by including `--save-asc-output`.
+
+You can save this output to txt files by including `--save-asc-output` (as shown in Option 2 of the Quickstart section).
 
 ## Citation
 
