@@ -35,7 +35,7 @@ Prepare a directory with `.txt` files (e.g., `data/text/`). Each file should con
 Then run:
 
 ```bash
-asc-analyzer \
+asc_analyzer \
   --input-dir data/text \
   --source cow \
   --print-asc \

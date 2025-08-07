@@ -84,7 +84,7 @@ def main():
     parser.add_argument(
         '--input-dir',
         default=os.path.join(default_db, 'test'),
-        help='Directory containing .txt files to process (default: data/text)'
+        help='Directory containing .txt files to process'
     )
     parser.add_argument(
         '--output-csv',
