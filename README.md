@@ -2,6 +2,9 @@
 
 The ASC analyzer extracts Argument Structure Constructions (ASCs) from raw English texts and computes indices related to ASC usage.
 
+<p align="center">
+  <img src="./docs/plot.jpeg" alt="ASC analyzer workflow" width="400"/>
+</p>
 
 ## Installation
 To ensure stability, I recommend installing dependencies in the following order:
@@ -103,8 +106,8 @@ You can save this output to txt files by including `--save-asc-output` (as shown
 
 ## Citation
 
-- For background on the analyzer and the design of the indices, see:  
-  - Sung, H., & Kyle, K. (2025). ASC Analyzer: A Python package for measuring argument structure construction usage in English texts. In *Proceedings of the 2nd Workshop on Construction Grammars and NLP (CxGs+NLP).*  
+- If you use the ASC analyzer, please cite:  
+  - Sung, H., & Kyle, K. (2025). [ASC Analyzer: A Python package for measuring argument structure construction usage in English texts](./docs/Sung_Kyle_CxG+NLP_manuscript.pdf). In *Proceedings of the 2nd Workshop on Construction Grammars and NLP (CxGs+NLP).* [[Poster]](./docs/Sung_Kyle_poster.pdf)
 
 - If you use the ASC tagger (e.g., `--print-asc`, `--save-asc-output`), please cite:  
   - Sung, H., & Kyle, K. (2024). [Leveraging Pre-trained Language Models for Linguistic Analysis: A Case of Argument Structure Constructions](https://aclanthology.org/2024.emnlp-main.415/). *Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP).*  
