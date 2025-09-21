@@ -103,10 +103,11 @@ You can save this output to txt files by including `--save-asc-output` (as shown
 
 ## Citation
 
-- If you use the ASC tagger (i.e., `--print-asc`, `--save-asc-output`), please cite:
-    - Sung, H., & Kyle, K. (2024). [Leveraging Pre-trained Language Models for Linguistic Analysis: A Case of Argument Structure Constructions](https://aclanthology.org/2024.emnlp-main.415/). *Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP)*.
+- For background on the analyzer and the design of the indices, see:  
+  - Sung, H., & Kyle, K. (2025). ASC Analyzer: A Python package for measuring argument structure construction usage in English texts. In *Proceedings of the 2nd Workshop on Construction Grammars and NLP (CxGs+NLP).*  
 
-- The ASC analyzer is currently in beta testing and will be updated soon.
+- If you use the ASC tagger (e.g., `--print-asc`, `--save-asc-output`), please cite:  
+  - Sung, H., & Kyle, K. (2024). [Leveraging Pre-trained Language Models for Linguistic Analysis: A Case of Argument Structure Constructions](https://aclanthology.org/2024.emnlp-main.415/). *Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP).*  
 
 # License
 
