@@ -53,7 +53,7 @@ python3 -m asc_analyzer.cli \
 python3 -m asc_analyzer.cli \
   --input-dir "/path/to/texts" \
   --save-asc-output \  # Saves ASC-tagged files in the same directory as the input
-  --source cow
+  --source "cow"
 ```
 
 * Assign ASC tags to each sentence
