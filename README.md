@@ -3,7 +3,7 @@
 The ASC analyzer extracts Argument Structure Constructions (ASCs) from raw English texts and computes indices related to ASC usage.
 
 <p align="center">
-  <img src="./docs/plot.jpeg" alt="ASC analyzer workflow" width="400"/>
+  <img src="./docs/plot.jpeg" alt="ASC analyzer workflow" width="450"/>
 </p>
 
 ## Installation
