@@ -1,6 +1,6 @@
 # ASC-analyzer
 
-**End-to-end Analyses of English Argument Structure Constructions with a Supervised Learning-based ASC Tagger**
+**End-to-end Analyses of English ASCs with a Supervised Learning-based ASC Tagger**
 
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/asc-analyzer?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/asc-analyzer)
 
