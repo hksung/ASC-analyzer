@@ -1,6 +1,6 @@
-# ASC-analyzer
+# ASC-analyzer: End-to-end Analyses of Argument Structure Constructions in English using a Supervised-learning ASC Tagger
 
-The ASC analyzer extracts Argument Structure Constructions (ASCs) from raw English texts and computes indices related to ASC usage.
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/asc-analyzer?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/asc-analyzer)
 
 <p align="center">
   <img src="./docs/plot.jpeg" alt="ASC analyzer workflow" width="550"/>
@@ -32,7 +32,7 @@ To ensure stability, I recommend installing dependencies in the following order:
    pip install asc-analyzer 
    ```
 
-## Quickstart
+## Quick start
 - Note: The package name on PyPI is asc-analyzer, but the internal Python module is asc_analyzer.
 - Prepare a directory with `.txt` files. Each file should contain plain English text.
 
@@ -106,10 +106,10 @@ You can save this output to txt files by including `--save-asc-output` (as shown
 
 ## Citation
 
-- If you use the ASC analyzer, please cite:  
+- If you use the ASC analyzer, please cite the following paper:
   - Sung, H., & Kyle, K. (2025). [ASC Analyzer: A Python package for measuring argument structure construction usage in English texts](./docs/Sung_Kyle_CxG+NLP_manuscript.pdf). In *Proceedings of the 2nd Workshop on Construction Grammars and NLP (CxGs+NLP).* [[Poster]](./docs/Sung_Kyle_poster.pdf)
 
-- If you use the ASC tagger (e.g., `--print-asc`, `--save-asc-output`), please cite:  
+- If you use the ASC tagger (e.g., `--print-asc`, `--save-asc-output`), please cite the following paper:
   - Sung, H., & Kyle, K. (2024). [Leveraging Pre-trained Language Models for Linguistic Analysis: A Case of Argument Structure Constructions](https://aclanthology.org/2024.emnlp-main.415/). *Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP).*  
 
 # License
