@@ -63,8 +63,8 @@ python3 -m asc_analyzer.cli \
 * Save token-level ASC tagging results as `*_ASCinfo.txt` files (`--save-asc-output`)
 * Compute ASC usage statistics (e.g., diversity, proportion, frequency, and verb–ASC association strength) and save them in a CSV summary file
 * The `--source` option determines which reference corpus is used for computing frequency and association measures:
-    * `cow`: uses the *COW* corpus (web-based, written English)
-    * `subt`: uses the *SUBTLEX* corpus (subtitle-based, spoken English)
+    * `cow`: uses the *EnCOW* corpus (web-based, written English)
+    * `subt`: uses the *SUBTLEX* corpus (subtitle-based, [transcribed] spoken English)
     * Choose the source based on the register that best matches your input data.
 
 ## Options
