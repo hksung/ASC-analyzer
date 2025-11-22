@@ -109,7 +109,7 @@ You can save this output to txt files by including `--save-asc-output` (as shown
 ## Citation
 
 - If you use the ASC analyzer, please cite the following paper:
-  - Sung, H., & Kyle, K. (2025). [ASC Analyzer: A Python package for measuring argument structure construction usage in English texts](./docs/Sung_Kyle_CxG+NLP_manuscript.pdf). In *Proceedings of the 2nd Workshop on Construction Grammars and NLP (CxGs+NLP).* [[Poster]](./docs/Sung_Kyle_poster.pdf)
+  - Sung, H., & Kyle, K. (2025). [ASC Analyzer: A Python package for measuring argument structure construction usage in English texts](https://aclanthology.org/2025.cxgsnlp-1.5.pdf). In *Proceedings of the 2nd Workshop on Construction Grammars and NLP (CxGs+NLP).* [[Poster]](./docs/Sung_Kyle_poster.pdf)
 
 - If you use the ASC tagger (e.g., `--print-asc`, `--save-asc-output`), please cite the following paper:
   - Sung, H., & Kyle, K. (2024). [Leveraging Pre-trained Language Models for Linguistic Analysis: A Case of Argument Structure Constructions](https://aclanthology.org/2024.emnlp-main.415/). *Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP).*  
